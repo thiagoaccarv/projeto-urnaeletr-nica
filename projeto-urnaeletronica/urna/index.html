@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"/>
+    <title>Urna Eletrônica</title>
+</head>
+
+<body>
+    <div class="urna">  <!-- Vai Englobar Todo Layout da Urna -->
+        <div class="tela"> <!-- Tela da Urna--> 
+            <div class='d-1'> <!-- Divisão 01 - Parte de Cima da Tela-->
+                
+                <div class="d-1-left"> <!-- Divisão na Tela Esquerda-->
+                    <div class="d1-1-1"> <!-- Texto Inicial-->
+                        <span>SEU VOTO PARA</span>
+                    </div>
+                    <div class="d1-1-2"> <!-- Cargo-->
+                        <span>VEREADOR</span>
+                    </div>
+                    <div class="d1-1-3"> <!-- Área dos Números-->
+                        <div class="numero pisca"></div>
+                        <div class="numero"></div>
+                    </div> 
+                    <div class="d1-1-4">  <!--Infos Complementares: Nome Completo, Partido, entre outros-->
+                        Nome: FULANO DE TAL <br/>
+                        Partido: QQQ <br/>
+                        Vice-Prefeito: BELTRANO DE TAL <br/>
+                    </div> 
+                </div>
+
+                <div class="d-1-right"> <!-- Divisão na Tela Direita-->
+                    <div class="d-1-image">
+                        <img src="images/84.jpg" alt="" />
+                        Prefeito
+                    </div>
+
+                    <div class="d-1-image small">
+                        <img src="images/84_2.jpg" alt="" />
+                        Vice-Prefeito
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="d-2" > <!-- Divisão 02 - Parte Debaixo da Tela-->
+                Aperte a tela: <br/>
+                CONFIRMA para CONFIRMAR este voto <br/>
+                CORRIGE para REINICIAR este voto
+            </div>
+        </div>
+        
+        <div class="teclado"> <!-- Teclado da Urna-->
+            <div class="teclado--linha"> <!-- Linhas do botão (1 2 3)-->
+                <div class="teclado--botao" onclick="clicou('1')">1</div>
+                <div class="teclado--botao" onclick="clicou('2')">2</div>
+                <div class="teclado--botao" onclick="clicou('3')">3</div>
+            </div>
+            <div class="teclado--linha"> <!-- Linhas do botão (4 5 6)-->
+                <div class="teclado--botao" onclick="clicou('4')">4</div>
+                <div class="teclado--botao" onclick="clicou('5')">5</div>
+                <div class="teclado--botao" onclick="clicou('6')">6</div>
+            </div>
+            <div class="teclado--linha"> <!-- Linhas do botão (7 8 9)-->
+                <div class="teclado--botao" onclick="clicou('7')">7</div>
+                <div class="teclado--botao" onclick="clicou('8')">8</div>
+                <div class="teclado--botao" onclick="clicou('9')">9</div>
+            </div>
+            <div class="teclado--linha"> <!-- Linhas do botão ( 0 )-->
+                <div class="teclado--botao" onclick="clicou('0')">0</div>                
+            </div>
+            <div class="teclado--linha"> <!-- Linhas do botão (BRANCO CORRIGE CONFIRMA  )-->
+                <div class="teclado--botao botao--branco" onclick="branco()">BRANCO</div>
+                <div class="teclado--botao botao--corrige" onclick="corrige()">CORRIGE</div>
+                <div class="teclado--botao botao--confirma" onclick="confirma()">CONFIRMA</div>
+            </div>
+        </div>  
+    </div>
+
+    <script src="etapas.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
