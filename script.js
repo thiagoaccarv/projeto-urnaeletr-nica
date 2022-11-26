@@ -1,80 +1,138 @@
-let B7Validator = {
-    handleSubmit:(event)=> {
-        event.preventDefault();
+// Variáveis de Controle de Interface
 
-        let send = true;
+let seuVotoPara = document.querySelector('.d1-1-1 span');
+let cargo = document.querySelector('.d1-1-2 span');
+let descricao = document.querySelector('.d1-1-4');
+let aviso = document.querySelector('.d-2');
+let lateral = document.querySelector('.d-1-right');
+let numeros = document.querySelector('.d1-1-3');
 
-        let inputs = form.querySelectorAll('input');
+// Variáveis de Controle de Ambiente
 
-        B7Validator.clearErrors();
+let etapaAtual = 0;
+let numero = '';
+let votoBranco = false;
+let votos = [];
 
-        for(let i=0;i<inputs.length;i++) {
-            let input = inputs[i];
-            let check = B7Validator.checkInput(input);
-            if(check !== true) {
-                send = false;
-                B7Validator.showError(input, check);                
-            }
-        }       
+function começarEtapa() {
+    let etapa = etapas[etapaAtual];
 
-        if(send) {
-            form.submit();
-        }  
+    let numeroHtml = '';
+    numero = '';
+    votoBranco = false;
 
-
-    }, checkInput:(input)=> {
-        let rules = input.getAttribute('data-rules');
-        if(rules !== null) {
-            rules = rules.split('|');
-            for(let k in rules) {
-                let rDetails = rules[k].split('=');
-                switch(rDetails[0]) {
-                    case 'required':
-                        if(input.value == '') {
-                            return 'Esse campo é obrigatório!'
-                        }
-                    break;
-                    case 'min':
-                        if(input.value.length < rDetails[1]) {
-                            return 'Campo tem que ter no mínimo '+rDetails[1]+' caracteres';                    
-                        }
-                    break;
-                    case 'email':
-                        if(input.value != '') {
-                            let regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
-                            if(!regex.test(input.value.toLowerCase())) {
-                                return 'E-mail digitado não é válido'
-                            }
-                        }
-                    break;
-
-                }
-            }
-        }
-
-        return true;
-    },
-    showError:(input, error)=> {
-        input.style.borderColor = '#FF0000'
-
-        let errorElement = document.createElement('div');
-        errorElement.classList.add('error');
-        errorElement.innerHTML = error;
-
-        input.parentElement.insertBefore(errorElement, input.ElementSibling);
-    },
-    clearErrors:()=> {
-        let inputs = form.querySelectorAll('input');
-        for(let i=0;i<inputs.length;i++) {
-            inputs[i].style = '';
-        }
-
-        let errorElements = document.querySelectorAll('.error');
-        for(let i=0;i<errorElements.length;i++) {
-            errorElements[i].remove();
+    for (let i = 0; i < etapa.numeros; i++) { // For Loop para os números
+        if (i === 0) {
+            numeroHtml += '<div class="numero pisca"></div>';
+        } else {
+            numeroHtml += '<div class="numero"></div>';
         }
     }
-};
 
-let form = document.querySelector('.b7validator');
-form.addEventListener('submit', B7Validator.handleSubmit );
+    seuVotoPara.style.display = 'none';
+    cargo.innerHTML = etapa.titulo;
+    descricao.innerHTML = '';
+    aviso.style.display = 'none';
+    lateral.innerHTML = '';
+    numeros.innerHTML = numeroHtml; // Variável aqui
+
+}
+
+
+// Variáveis de Funções 
+
+function atualizaInterface() {
+    let etapa = etapas[etapaAtual];
+    let candidato = etapa.candidatos.filter((item)=> {
+        if(item.numero === numero) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+
+    if(candidato.length > 0) {
+        candidato = candidato[0];
+        seuVotoPara.style.display = 'block';
+        aviso.style.display = 'block';
+        descricao.innerHTML = `Nome: ${candidato.nome}<br/> Partido: ${candidato.partido}`;
+
+        let fotosHtml = '';
+        for( let i in candidato.fotos) {
+            if(candidato.fotos[i].small) {
+                fotosHtml += `<div class="d-1-image small"> <img src="images/${candidato.fotos[i].url}" alt="" />${candidato.fotos[i].legenda} </div>`;
+            } else {
+                fotosHtml += `<div class="d-1-image"> <img src="images/${candidato.fotos[i].url}" alt="" />${candidato.fotos[i].legenda} </div>`;
+            }
+            
+        }
+
+        lateral.innerHTML = fotosHtml;
+    } else {
+        seuVotoPara.style.display = 'block';
+        aviso.style.display = 'block';
+        descricao.innerHTML = '<div class="aviso--grande pisca">VOTO NULO </div>'
+
+    }
+}
+
+function clicou(n) {
+    let elNumero = document.querySelector('.numero.pisca');
+    if (elNumero !== null) {
+        elNumero.innerHTML = n;
+        numero = `${numero}${n}`;
+
+        elNumero.classList.remove('pisca');
+        if(elNumero.nextElementSibling !== null) {
+            elNumero.nextElementSibling.classList.add('pisca');
+        } else {
+            atualizaInterface();
+        }
+        
+    }
+}
+
+function branco() {
+    numero = '';    
+    votoBranco = true;    
+    seuVotoPara.style.display = 'block';
+    aviso.style.display = 'block';
+    numeros.innerHTML = '';
+    descricao.innerHTML = '<div class="aviso--grande pisca">VOTO EM BRANCO </div>'
+}
+
+function corrige() {
+    começarEtapa();
+}
+
+function confirma() {
+    let etapa = etapas[etapaAtual];
+
+    let votoConfirmado = false;
+  
+    if(votoBranco === true) {
+        votoConfirmado = true;
+        votos.push ( { 
+            etapa: etapas[etapaAtual].titulo,
+            voto: 'branco'
+        });        
+    } else if(numero.length === etapa.numeros) {
+        votoConfirmado = true;
+        votos.push ( { 
+            etapa: etapas[etapaAtual].titulo,
+            voto: numero
+        });        
+    }
+
+    if(votoConfirmado) {
+        etapaAtual++;
+        if(etapas[etapaAtual] !== undefined) {
+            começarEtapa();
+        }  else {
+            document.querySelector('.tela').innerHTML = '<div class="aviso--gigante pisca">FIM </div>'
+            console.log(votos)
+        }
+    }
+} 
+
+começarEtapa();
